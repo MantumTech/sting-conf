@@ -6,17 +6,25 @@
 
   <script>
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const queryParams = new URLSearchParams(window.location.search);
+    const path = window.location.pathname.split('/').pop();
+
     const type = hashParams.get('type');
-    const access_token = hashParams.get('access_token');
-    const error = hashParams.get('error_description');
+    const accessToken = hashParams.get('access_token');
+    const error = hashParams.get('error_description') || hashParams.get('error');
 
     if (error) {
       window.location.href = "https://mantum.tech/error";
-    } else if (type === 'signup') {
+    } else if (type === 'signup' && accessToken) {
       window.location.href = "https://mantum.tech/emailcomf";
-    } else if (type === 'recovery') {
-      // ✅ Forward full hash as-is
+    } else if (type === 'recovery' && accessToken) {
       window.location.href = "https://mantumtech.github.io/reset-password/" + window.location.hash;
+    } else if (path === 'success' || queryParams.has('session_id')) {
+      window.location.href = "https://mantum.tech/payment-success";
+    } else if (path === 'cancelled') {
+      window.location.href = "https://mantum.tech/payment-cancelled";
+    } else if (accessToken) {
+      window.location.href = "https://mantum.tech/emailcomf";
     } else {
       window.location.href = "https://mantum.tech/error";
     }
