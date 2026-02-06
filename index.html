@@ -11,19 +11,25 @@
 
     const type = hashParams.get('type');
     const accessToken = hashParams.get('access_token');
-    const error = hashParams.get('error_description') || hashParams.get('error');
+    // Check both hash and query params for errors
+    const error = hashParams.get('error_description') || hashParams.get('error')
+                || queryParams.get('error_description') || queryParams.get('error');
 
     if (error) {
       window.location.href = "https://mantum.tech/error";
     } else if (type === 'signup' && accessToken) {
       window.location.href = "https://mantum.tech/emailcomf";
     } else if (type === 'recovery' && accessToken) {
+      // Forward full hash for password reset
       window.location.href = "https://mantumtech.github.io/reset-password/" + window.location.hash;
     } else if (path === 'success' || queryParams.has('session_id')) {
+      // Stripe payment success
       window.location.href = "https://mantum.tech/payment-success";
     } else if (path === 'cancelled') {
+      // Stripe payment cancelled
       window.location.href = "https://mantum.tech/payment-cancelled";
     } else if (accessToken) {
+      // Generic auth success
       window.location.href = "https://mantum.tech/emailcomf";
     } else {
       window.location.href = "https://mantum.tech/error";
